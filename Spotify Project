@@ -1,0 +1,83 @@
+For this project, I downloaded Spotify data from Kaggle. Then I created a table to insert Spotify data into. 
+Lastly, I performed analytics on the data using SQL. 
+
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+song_key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+song_mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness text NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL );
+
+Then I inserted the Spotify Data .csv into the table.
+Next, I explored the data using the following SQL.
+
+What artist released the longest song?
+SELECT artist_name, MAX(duration_ms)
+FROM BIT_DB.Spotifydata;
+
+Query the artists with top songs and the count of top songs each artist has.
+SELECT artist_name, count(*)
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+ORDER BY count(*) desc;
+
+How many songs have other artists featured on the song?
+SELECT count(*)
+FROM BIT_DB.Spotifydata
+WHERE track_name like '%feat%' or track_name like '%with%';
+
+What is the average energy?
+SELECT AVG(energy)
+FROM BIT_DB.Spotifydata;
+
+what song has the fastest tempo?
+SELECT track_name, max(tempo)
+FROM BIT_DB. Spotifydata
+GROUP BY track_name
+ORDER BY MAX(tempo) desc
+Limit 1;
+
+Look at the top 10 songs to see if they are above or below the average Energy level.
+SELECT track_name, energy,
+(CASE
+WHEN energy > 0.64 THEN 'Above Average'
+WHEN energy = 0.64 THEN 'Average'
+WHEN energy < 0.64 THEN 'Below Average'
+END) AS CompareAverage
+FROM BIT_DB.Spotifydata
+LIMIT 10;
+
+What is the average danceability?
+SELECT AVG(danceability)
+FROM BIT_DB.Spotifydata;
+
+What is the average danceability for the 10 most popular songs?
+SELECT track_name,avg(danceability), max(popularity)
+FROM BIT_DB.Spotifydata
+GROUP BY track_name
+ORDER BY MAX(popularity) desc
+Limit 10;
+
+What is the avg popularity, danceability, and energy by artist and track?
+SELECT artist_name, track_name, avg(popularity), avg(danceability), avg(energy)
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name, track_name;
+
+Who are the top 10 artists by popularity?
+SELECT artist_name, popularity
+FROM BIT_DB.Spotifydata
+ORDER BY popularity desc
+LIMIT 10;
